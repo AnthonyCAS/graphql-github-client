@@ -18,9 +18,11 @@ import com.github.zhira.githubgraphqlapp.utilities.Constants
 import java.util.*
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v4.content.ContextCompat
-
-
-
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
+import com.github.zhira.githubgraphqlapp.utilities.GraphQlTools
 
 
 class GithubUsersActivity : AppCompatActivity() {
@@ -31,10 +33,13 @@ class GithubUsersActivity : AppCompatActivity() {
     var timer = Timer()
     private val delay: Long = 1000
 
+    private lateinit var client: ApolloClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_github_users)
         ButterKnife.bind(this)
+        client = GraphQlTools.setupApollo()
         val items =  getLists()
         usersRecyclerView.layoutManager = LinearLayoutManager(this)
         usersRecyclerView.hasFixedSize()
@@ -52,13 +57,35 @@ class GithubUsersActivity : AppCompatActivity() {
         timer.schedule(
                 object : TimerTask() {
                     override fun run() {
-                        Log.e("Some", text.toString())
+                        Log.e("Query users", text.toString())
+                        client.query(FindQuery
+                                .builder()
+                                .name("butterKnife")
+                                .owner("jakewharton")
+                                .build())
+                                .enqueue(object : ApolloCall.Callback<FindQuery.Data>() {
+
+                                    override fun onFailure(e: ApolloException) {
+                                        Log.e("Error from: ", e.message.toString())
+                                    }
+
+                                    override fun onResponse(response: Response<FindQuery.Data>) {
+                                        Log.e("Response from users", response.data()?.repository()?.name() + ", " + response.data()?.repository()?.description())
+                                        /*runOnUiThread({
+
+                                        })*/
+                                    }
+
+                                })
                     }
                 },
                 delay
         )
     }
 
+    /**
+     * callback from recycler view
+     */
     private fun selectUser (item: Item) {
         Toast.makeText(this, "Selected user: ${item.name}", Toast.LENGTH_LONG).show()
         val intent = Intent(this@GithubUsersActivity, GithubRepositoriesActivity::class.java)
