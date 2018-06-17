@@ -8,8 +8,10 @@ import com.github.zhira.githubgraphqlapp.R
 import com.github.zhira.githubgraphqlapp.models.Item
 import kotlinx.android.synthetic.main.adapter_user_item.view.*
 
-
-
+/**
+ * User Adapter
+ * It helps to map user information into the layout github' users
+ */
 class UserAdapter(private val dataset: ArrayList<Item>): RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,6 +25,13 @@ class UserAdapter(private val dataset: ArrayList<Item>): RecyclerView.Adapter<Us
 
     override fun getItemCount() = dataset.size
 
+    /**
+     * it contains:
+     *  name
+     *  location
+     *  login
+     *  picture
+     */
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(item: Item) {
