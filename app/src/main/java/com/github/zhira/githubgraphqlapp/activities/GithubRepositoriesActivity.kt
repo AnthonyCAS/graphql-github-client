@@ -11,6 +11,7 @@ import com.github.zhira.githubgraphqlapp.R
 import com.github.zhira.githubgraphqlapp.adapters.RepositoryAdapter
 import com.github.zhira.githubgraphqlapp.models.Item
 import com.github.zhira.githubgraphqlapp.utilities.Constants
+import kotlinx.android.synthetic.main.activity_github_repositories.view.*
 import java.util.ArrayList
 
 class GithubRepositoriesActivity : AppCompatActivity() {
@@ -24,11 +25,12 @@ class GithubRepositoriesActivity : AppCompatActivity() {
         ButterKnife.bind(this)
         val userLogin = intent.getStringExtra(Constants.LOGIN_USER_CODE)
         val userName = intent.getStringExtra(Constants.NAME_USER_CODE)
-        toolbar.title = userName
+
+        toolbar.title = ""
+        toolbar.toolbar_title.text = userName
         toolbar.setNavigationIcon(R.drawable.ic_back_button2)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         val items =  getLists()
         repositoryRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -53,6 +55,7 @@ class GithubRepositoriesActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
         return true
     }
 }

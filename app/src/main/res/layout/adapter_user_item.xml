@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:textColorLink="@color/colorPrimaryText"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/user_pic"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
+        android:textColorLink="@color/colorPrimaryText"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/user_name"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:textColorLink="@color/colorPrimaryText"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/user_pic"
         app:layout_constraintTop_toBottomOf="@+id/user_name" />

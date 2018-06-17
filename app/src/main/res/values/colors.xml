@@ -7,4 +7,5 @@
     <color name="colorPrimaryText">#000000</color>
     <color name="colorSecondaryText">#98989c</color>
     <color name="background_dark">#e8e8ea</color>
+    <color name="recycler_divider">#dedee2</color>
 </resources>
