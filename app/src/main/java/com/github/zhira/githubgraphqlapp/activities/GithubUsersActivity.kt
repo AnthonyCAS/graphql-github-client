@@ -11,6 +11,7 @@ import butterknife.ButterKnife
 import com.github.zhira.githubgraphqlapp.R
 import butterknife.OnTextChanged
 import com.github.zhira.githubgraphqlapp.adapters.UserAdapter
+import com.github.zhira.githubgraphqlapp.models.Item
 import java.util.*
 
 class GithubUsersActivity : AppCompatActivity() {
@@ -21,16 +22,14 @@ class GithubUsersActivity : AppCompatActivity() {
     var timer = Timer()
     private val delay: Long = 1000
 
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_github_users)
         ButterKnife.bind(this)
-        viewManager = LinearLayoutManager(this)
-        //viewAdapter = UserAdapter(myDataset)
+        val items =  getLists()
+        usersRecyclerView.layoutManager = LinearLayoutManager(this)
+        usersRecyclerView.hasFixedSize()
+        usersRecyclerView.adapter = UserAdapter(items)
     }
 
     // callback for searchBox, wait 1 second for a new query
@@ -46,7 +45,15 @@ class GithubUsersActivity : AppCompatActivity() {
                 },
                 delay
         )
+    }
 
+    fun getLists(): ArrayList<Item> {
+        var lists = ArrayList<Item>()
+        lists.add(Item("1", "Item 1", "Descripcion 1", "anthony"))
+        lists.add(Item("2", "Item 2", "Descripcion 2", "some"))
+        lists.add(Item("3", "Item 3", "Descripcion 3", "juan"))
+        lists.add(Item("4", "Item 4", "Descripcion 4", "tomas"))
+        return lists;
     }
 
     override fun onSupportNavigateUp(): Boolean {

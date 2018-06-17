@@ -33,10 +33,11 @@ dependencies {
 
     implementation "com.jakewharton:butterknife:$butterknife_version"
     kapt "com.jakewharton:butterknife-compiler:$butterknife_version"
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.facebook.fresco:fresco:1.9.0'
 
     // support libraries:
     implementation "com.android.support:recyclerview-v7:$supportLibVersion"
+    implementation "com.android.support:exifinterface:$supportLibVersion"
     implementation "com.android.support:support-v4:$supportLibVersion"
     implementation "com.android.support:design:$supportLibVersion"
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
