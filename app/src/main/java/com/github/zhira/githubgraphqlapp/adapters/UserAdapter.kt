@@ -1,19 +1,23 @@
 package com.github.zhira.githubgraphqlapp.adapters
 
-import android.app.FragmentBreadCrumbs
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.zhira.githubgraphqlapp.R
-import com.github.zhira.githubgraphqlapp.models.Item
 import kotlinx.android.synthetic.main.adapter_user_item.view.*
 
 /**
  * User Adapter
  * It helps to map user information into the layout github' users
  */
-class UserAdapter(private val dataset: ArrayList<Item>, val clickListener: (Item) -> Unit): RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+class UserAdapter(val clickListener: (SearchUserQuery.User) -> Unit): RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+
+    private val userEntries: MutableList<SearchUserQuery.User>
+
+    init {
+        this.userEntries = ArrayList()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.adapter_user_item, parent, false)
@@ -21,10 +25,16 @@ class UserAdapter(private val dataset: ArrayList<Item>, val clickListener: (Item
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        (holder as ViewHolder).bindItems(dataset[position], clickListener)
+        (holder as ViewHolder).bindItems(userEntries[position], clickListener)
     }
 
-    override fun getItemCount() = dataset.size
+    fun updateData(data: List<SearchUserQuery.User>) {
+        userEntries.clear()
+        userEntries.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount() = userEntries.size
 
     /**
      * it contains:
@@ -35,12 +45,13 @@ class UserAdapter(private val dataset: ArrayList<Item>, val clickListener: (Item
      */
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        fun bindItems(item: Item, clickListener: (Item) -> Unit) {
-            itemView.user_name.text = item.name
-            itemView.user_location.text = item.location
-            itemView.user_login.text = item.login
-            if (item.picture_url != null)
-                itemView.user_pic.setImageURI("https://avatars3.githubusercontent.com/u/5943602?s=400&u=bfe341bbda63034ef33408fbec7fc5f9c0a2d3d5&v=4")
+        fun bindItems(item: SearchUserQuery.User, clickListener: (SearchUserQuery.User) -> Unit) {
+            val user = item.node()?.fragments()?.userFragment()
+            itemView.user_name.text = user?.name()
+            itemView.user_location.text = user?.location()
+            itemView.user_login.text = user?.login()
+            if (user?.avatarUrl() != null)
+                itemView.user_pic.setImageURI(user?.avatarUrl().toString())
             itemView.setOnClickListener { clickListener(item) }
         }
     }

@@ -23,6 +23,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.github.zhira.githubgraphqlapp.utilities.GraphQlTools
+import kotlin.collections.ArrayList
 
 
 class GithubUsersActivity : AppCompatActivity() {
@@ -34,6 +35,7 @@ class GithubUsersActivity : AppCompatActivity() {
     private val delay: Long = 1000
 
     private lateinit var client: ApolloClient
+    private lateinit var userAdapter: UserAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +45,8 @@ class GithubUsersActivity : AppCompatActivity() {
         val items =  getLists()
         usersRecyclerView.layoutManager = LinearLayoutManager(this)
         usersRecyclerView.hasFixedSize()
-        usersRecyclerView.adapter = UserAdapter(items) { item: Item -> selectUser(item)}
+        userAdapter = UserAdapter { item: SearchUserQuery.User -> selectUser(item)}
+        usersRecyclerView.adapter = userAdapter
         val itemDecorator = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.recycler_divider)!!)
         usersRecyclerView.addItemDecoration(itemDecorator)
@@ -58,22 +61,23 @@ class GithubUsersActivity : AppCompatActivity() {
                 object : TimerTask() {
                     override fun run() {
                         Log.e("Query users", text.toString())
-                        client.query(FindQuery
+                        client.query(SearchUserQuery
                                 .builder()
-                                .name("butterKnife")
-                                .owner("jakewharton")
+                                .query("AnthonyCAS")
+                                .number(50)
                                 .build())
-                                .enqueue(object : ApolloCall.Callback<FindQuery.Data>() {
+                                .enqueue(object : ApolloCall.Callback<SearchUserQuery.Data>() {
 
                                     override fun onFailure(e: ApolloException) {
                                         Log.e("Error from: ", e.message.toString())
                                     }
 
-                                    override fun onResponse(response: Response<FindQuery.Data>) {
-                                        Log.e("Response from users", response.data()?.repository()?.name() + ", " + response.data()?.repository()?.description())
-                                        /*runOnUiThread({
-
-                                        })*/
+                                    override fun onResponse(response: Response<SearchUserQuery.Data>) {
+                                        runOnUiThread {
+                                          userAdapter.updateData(
+                                            response!!.data()!!.userEntry()!!.user() as List<SearchUserQuery.User>
+                                          )
+                                        }
                                     }
 
                                 })
@@ -86,11 +90,12 @@ class GithubUsersActivity : AppCompatActivity() {
     /**
      * callback from recycler view
      */
-    private fun selectUser (item: Item) {
-        Toast.makeText(this, "Selected user: ${item.name}", Toast.LENGTH_LONG).show()
+    private fun selectUser (item: SearchUserQuery.User) {
+        val user = item.node()?.fragments()?.userFragment()
+        Toast.makeText(this, "Selected user: ${user?.name()}", Toast.LENGTH_LONG).show()
         val intent = Intent(this@GithubUsersActivity, GithubRepositoriesActivity::class.java)
-        intent.putExtra(Constants.LOGIN_USER_CODE, item.login)
-        intent.putExtra(Constants.NAME_USER_CODE, item.name)
+        intent.putExtra(Constants.LOGIN_USER_CODE, user?.login())
+        intent.putExtra(Constants.NAME_USER_CODE, user?.name())
         startActivity(intent)
     }
 

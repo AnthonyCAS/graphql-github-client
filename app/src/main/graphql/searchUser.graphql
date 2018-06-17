@@ -1,0 +1,21 @@
+query SearchUser($query: String!, $number: Int!) {
+  userEntry: search(query: $query, first: $number, type: USER) {
+    userCount
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    user: edges {
+      node {
+        ... UserFragment
+      }
+    }
+  }
+}
+
+fragment UserFragment on User {
+  login
+  name
+  location
+  avatarUrl
+}
