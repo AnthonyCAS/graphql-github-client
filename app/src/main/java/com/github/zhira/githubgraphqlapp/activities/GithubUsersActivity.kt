@@ -1,13 +1,14 @@
-package com.github.zhira.githubgraphqlapp
+package com.github.zhira.githubgraphqlapp.activities
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.github.zhira.githubgraphqlapp.R
 
-class MainActivity : AppCompatActivity() {
+class GithubUsersActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_github_users)
     }
 
     override fun onSupportNavigateUp(): Boolean {

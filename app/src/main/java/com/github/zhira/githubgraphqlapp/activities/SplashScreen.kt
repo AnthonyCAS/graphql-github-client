@@ -9,11 +9,9 @@ import android.animation.ObjectAnimator
 import android.os.Handler
 import android.widget.ProgressBar
 import android.view.animation.AnimationUtils
-import android.view.View
 import android.widget.ImageView
 import butterknife.BindView
 import butterknife.ButterKnife
-import com.github.zhira.githubgraphqlapp.MainActivity
 
 
 class SplashScreen : AppCompatActivity() {
@@ -35,7 +33,7 @@ class SplashScreen : AppCompatActivity() {
 
         val handler = Handler()
         handler.postDelayed(Runnable {
-            startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+            startActivity(Intent(this@SplashScreen, GithubUsersActivity::class.java))
             finish()
             return@Runnable
         }, 3000)
