@@ -1,18 +1,24 @@
 package com.github.zhira.githubgraphqlapp.activities
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.widget.EditText
+import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.github.zhira.githubgraphqlapp.R
 import butterknife.OnTextChanged
 import com.github.zhira.githubgraphqlapp.adapters.UserAdapter
 import com.github.zhira.githubgraphqlapp.models.Item
+import com.github.zhira.githubgraphqlapp.utilities.Constants
 import java.util.*
+import android.support.v7.widget.DividerItemDecoration
+
+
 
 class GithubUsersActivity : AppCompatActivity() {
 
@@ -29,7 +35,10 @@ class GithubUsersActivity : AppCompatActivity() {
         val items =  getLists()
         usersRecyclerView.layoutManager = LinearLayoutManager(this)
         usersRecyclerView.hasFixedSize()
-        usersRecyclerView.adapter = UserAdapter(items)
+        usersRecyclerView.adapter = UserAdapter(items, { item: Item -> selectUser(item)})
+        usersRecyclerView.addItemDecoration(DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL))
     }
 
     // callback for searchBox, wait 1 second for a new query
@@ -45,6 +54,14 @@ class GithubUsersActivity : AppCompatActivity() {
                 },
                 delay
         )
+    }
+
+    private fun selectUser (item: Item) {
+        Toast.makeText(this, "Selected user: ${item.name}", Toast.LENGTH_LONG).show()
+        val intent = Intent(this@GithubUsersActivity, GithubRepositoriesActivity::class.java)
+        intent.putExtra(Constants.LOGIN_USER_CODE, item.login)
+        intent.putExtra(Constants.NAME_USER_CODE, item.name)
+        startActivity(intent)
     }
 
     fun getLists(): ArrayList<Item> {

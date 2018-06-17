@@ -1,5 +1,6 @@
 package com.github.zhira.githubgraphqlapp.adapters
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,7 @@ class RepositoryAdapter(private val dataSet: ArrayList<Item>): RecyclerView.Adap
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = LayoutInflater.from(parent.context).inflate(R.layout.adapter_repository_item, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view, parent.context)
     }
 
     override fun getItemCount() = dataSet.size
@@ -31,10 +32,10 @@ class RepositoryAdapter(private val dataSet: ArrayList<Item>): RecyclerView.Adap
      *  repository pull request count
      *  repository description
      */
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, val context: Context): RecyclerView.ViewHolder(itemView) {
         fun bindItems (item: Item) {
             itemView.repository_name.text = item.login
-            itemView.repository_pr_count.text = item.location
+            itemView.repository_pr_count.text = "${context.resources.getString(R.string.github_repositories_pr_label)} ${item.location}"
             itemView.repository_description.text = item.picture_url
         }
     }

@@ -2,13 +2,16 @@ package com.github.zhira.githubgraphqlapp.activities
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.github.zhira.githubgraphqlapp.R
 import com.github.zhira.githubgraphqlapp.adapters.RepositoryAdapter
 import com.github.zhira.githubgraphqlapp.models.Item
+import com.github.zhira.githubgraphqlapp.utilities.Constants
 import java.util.ArrayList
 
 class GithubRepositoriesActivity : AppCompatActivity() {
@@ -20,11 +23,16 @@ class GithubRepositoriesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_github_repositories)
         ButterKnife.bind(this)
-        toolbar.title = "User"
+        val userLogin = intent.getStringExtra(Constants.LOGIN_USER_CODE)
+        val userName = intent.getStringExtra(Constants.NAME_USER_CODE)
+        toolbar.title = userName
         val items =  getLists()
         repositoryRecyclerView.layoutManager = LinearLayoutManager(this)
         repositoryRecyclerView.hasFixedSize()
         repositoryRecyclerView.adapter = RepositoryAdapter(items)
+        repositoryRecyclerView.addItemDecoration(DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL))
     }
 
     fun getLists(): ArrayList<Item> {

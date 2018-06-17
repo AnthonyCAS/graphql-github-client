@@ -20,6 +20,7 @@
         android:id="@+id/repository_pr_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:text="@string/github_repositories_pr_label"
         android:textSize="12.8sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +30,11 @@
         android:id="@+id/repository_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:textSize="12.8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_name" />
+        app:layout_constraintTop_toBottomOf="@+id/repository_name" />
 
 </android.support.constraint.ConstraintLayout>
