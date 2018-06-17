@@ -17,6 +17,9 @@ import com.github.zhira.githubgraphqlapp.models.Item
 import com.github.zhira.githubgraphqlapp.utilities.Constants
 import java.util.*
 import android.support.v7.widget.DividerItemDecoration
+import android.support.v4.content.ContextCompat
+
+
 
 
 
@@ -35,10 +38,10 @@ class GithubUsersActivity : AppCompatActivity() {
         val items =  getLists()
         usersRecyclerView.layoutManager = LinearLayoutManager(this)
         usersRecyclerView.hasFixedSize()
-        usersRecyclerView.adapter = UserAdapter(items, { item: Item -> selectUser(item)})
-        usersRecyclerView.addItemDecoration(DividerItemDecoration(
-                this,
-                DividerItemDecoration.VERTICAL))
+        usersRecyclerView.adapter = UserAdapter(items) { item: Item -> selectUser(item)}
+        val itemDecorator = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.recycler_divider)!!)
+        usersRecyclerView.addItemDecoration(itemDecorator)
     }
 
     // callback for searchBox, wait 1 second for a new query

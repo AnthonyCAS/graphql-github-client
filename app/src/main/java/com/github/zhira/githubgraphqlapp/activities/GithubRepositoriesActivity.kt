@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.github.zhira.githubgraphqlapp.R
@@ -26,6 +25,11 @@ class GithubRepositoriesActivity : AppCompatActivity() {
         val userLogin = intent.getStringExtra(Constants.LOGIN_USER_CODE)
         val userName = intent.getStringExtra(Constants.NAME_USER_CODE)
         toolbar.title = userName
+        toolbar.setNavigationIcon(R.drawable.ic_back_button2)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         val items =  getLists()
         repositoryRecyclerView.layoutManager = LinearLayoutManager(this)
         repositoryRecyclerView.hasFixedSize()
@@ -46,5 +50,9 @@ class GithubRepositoriesActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return true
     }
 }
