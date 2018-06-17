@@ -18,12 +18,12 @@ class UserAdapter(private val dataset: ArrayList<Item>): RecyclerView.Adapter<Us
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindItems(dataset[position])
+        holder.bindItems(dataset.get(position))
     }
 
     override fun getItemCount() = dataset.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(item: Item) {
             itemView.user_name.text = item.name

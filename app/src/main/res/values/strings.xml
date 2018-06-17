@@ -2,5 +2,5 @@
     <string name="app_name">Github Client CA</string>
     <string name="github_users_title">Github Users</string>
     <string name="github_users_search_placeholder">Search Github Users</string>
-
+    <string name="github_repositories_pr_label">PR Count: </string>
 </resources>
