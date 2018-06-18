@@ -30,6 +30,11 @@ class UserAdapter(val clickListener: (SearchUserQuery.User) -> Unit): RecyclerVi
     }
 
     fun updateData(data: List<SearchUserQuery.User>) {
+        userEntries.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun restoreData(data: List<SearchUserQuery.User>) {
         userEntries.clear()
         userEntries.addAll(data)
         notifyDataSetChanged()

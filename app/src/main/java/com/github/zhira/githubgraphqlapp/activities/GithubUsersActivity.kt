@@ -16,6 +16,7 @@ import com.github.zhira.githubgraphqlapp.utilities.Constants
 import java.util.*
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v4.content.ContextCompat
+import android.text.TextUtils
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
@@ -24,7 +25,7 @@ import com.github.zhira.githubgraphqlapp.utilities.GraphQlTools
 
 class GithubUsersActivity : AppCompatActivity() {
 
-    private lateinit var END_CURSOR: String
+    private var END_CURSOR: String? = null
     private var HAS_NEXT_PAGE: Boolean = false
 
     @BindView(R.id.search_box) lateinit var searchEditText: EditText
@@ -61,6 +62,8 @@ class GithubUsersActivity : AppCompatActivity() {
             object : TimerTask() {
                 override fun run() {
                     Log.e("Query users", text.toString())
+                    END_CURSOR = null
+                    HAS_NEXT_PAGE = false
                     loadUsers(text.toString())
                 }
             }, delay
@@ -72,6 +75,7 @@ class GithubUsersActivity : AppCompatActivity() {
             .builder()
             .query(query)
             .number(Constants.QUERY_LIMIT)
+            .after(END_CURSOR)
             .build())
             .enqueue(object : ApolloCall.Callback<SearchUserQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
@@ -104,8 +108,11 @@ class GithubUsersActivity : AppCompatActivity() {
         usersRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView?.canScrollVertically(1)!!) {
-                    Log.e("REACH", "END")
+                if (!recyclerView?.canScrollVertically(1)!! && HAS_NEXT_PAGE) {
+                    var query = "a"
+                    if ( ! TextUtils.isEmpty(searchEditText.text.toString()))
+                        query = searchEditText.text.toString()
+                    loadUsers(query)
                 }
             }
 

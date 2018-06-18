@@ -1,5 +1,5 @@
-query SearchUser($query: String!, $number: Int!) {
-  userEntry: search(query: $query, first: $number, type: USER) {
+query SearchUser($query: String!, $number: Int!, $after: String) {
+  userEntry: search(query: $query, first: $number, after: $after, type: USER) {
     userCount
     pageInfo {
       endCursor
