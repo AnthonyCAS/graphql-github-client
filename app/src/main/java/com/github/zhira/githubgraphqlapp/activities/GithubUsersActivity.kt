@@ -12,7 +12,6 @@ import butterknife.ButterKnife
 import com.github.zhira.githubgraphqlapp.R
 import butterknife.OnTextChanged
 import com.github.zhira.githubgraphqlapp.adapters.UserAdapter
-import com.github.zhira.githubgraphqlapp.models.Item
 import com.github.zhira.githubgraphqlapp.utilities.Constants
 import java.util.*
 import android.support.v7.widget.DividerItemDecoration
@@ -22,11 +21,12 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.github.zhira.githubgraphqlapp.utilities.GraphQlTools
-import kotlin.collections.ArrayList
-
 
 class GithubUsersActivity : AppCompatActivity() {
 
+    private lateinit var END_CURSOR: String
+    private var HAS_NEXT_PAGE: Boolean = false
+    
     @BindView(R.id.search_box) lateinit var searchEditText: EditText
     @BindView(R.id.users_list_rv) lateinit var usersRecyclerView: RecyclerView
 
@@ -41,7 +41,6 @@ class GithubUsersActivity : AppCompatActivity() {
         setContentView(R.layout.activity_github_users)
         ButterKnife.bind(this)
         client = GraphQlTools.setupApollo()
-        val items =  getLists()
         usersRecyclerView.layoutManager = LinearLayoutManager(this)
         usersRecyclerView.hasFixedSize()
         userAdapter = UserAdapter { item: SearchUserQuery.User -> selectUser(item)}
@@ -49,7 +48,8 @@ class GithubUsersActivity : AppCompatActivity() {
         val itemDecorator = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.recycler_divider)!!)
         usersRecyclerView.addItemDecoration(itemDecorator)
-        loadUsers("a", 20)
+        setRecyclerViewScrollListener()
+        loadUsers("a", 10)
     }
 
     // callback for searchBox, wait 1 second for a new query
@@ -98,13 +98,19 @@ class GithubUsersActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun getLists(): ArrayList<Item> {
-        var lists = ArrayList<Item>()
-        lists.add(Item("1", "Item 1", "Descripcion 1", "anthony"))
-        lists.add(Item("2", "Item 2", "Descripcion 2", "some"))
-        lists.add(Item("3", "Item 3", "Descripcion 3", "juan"))
-        lists.add(Item("4", "Item 4", "Descripcion 4", "tomas"))
-        return lists;
+    private fun setRecyclerViewScrollListener () {
+        usersRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!recyclerView?.canScrollVertically(1)!!) {
+                    Log.e("REACH", "END");
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {
