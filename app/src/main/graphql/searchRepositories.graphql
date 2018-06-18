@@ -1,0 +1,13 @@
+query SearchRepository($login: String!, $number: Int!) {
+  user(login: $login) {
+    repositoryEntry: repositories(first: $number, isFork: false) {
+      nodes {
+        name
+        description
+        pullRequests {
+            totalCount
+        }
+      }
+    }
+  }
+}
