@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.widget.EditText
-import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.github.zhira.githubgraphqlapp.R
@@ -50,6 +49,7 @@ class GithubUsersActivity : AppCompatActivity() {
         val itemDecorator = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.recycler_divider)!!)
         usersRecyclerView.addItemDecoration(itemDecorator)
+        loadUsers("a", 20)
     }
 
     // callback for searchBox, wait 1 second for a new query
@@ -58,33 +58,33 @@ class GithubUsersActivity : AppCompatActivity() {
         timer.cancel()
         timer = Timer()
         timer.schedule(
-                object : TimerTask() {
-                    override fun run() {
-                        Log.e("Query users", text.toString())
-                        client.query(SearchUserQuery
-                                .builder()
-                                .query("AnthonyCAS")
-                                .number(50)
-                                .build())
-                                .enqueue(object : ApolloCall.Callback<SearchUserQuery.Data>() {
-
-                                    override fun onFailure(e: ApolloException) {
-                                        Log.e("Error from: ", e.message.toString())
-                                    }
-
-                                    override fun onResponse(response: Response<SearchUserQuery.Data>) {
-                                        runOnUiThread {
-                                          userAdapter.updateData(
-                                            response!!.data()!!.userEntry()!!.user() as List<SearchUserQuery.User>
-                                          )
-                                        }
-                                    }
-
-                                })
-                    }
-                },
-                delay
+            object : TimerTask() {
+                override fun run() {
+                    Log.e("Query users", text.toString())
+                    loadUsers(text.toString(), 50)
+                }
+            }, delay
         )
+    }
+
+    private fun loadUsers (query: String, limit: Int) {
+        client.query(SearchUserQuery
+            .builder()
+            .query(query)
+            .number(limit)
+            .build())
+            .enqueue(object : ApolloCall.Callback<SearchUserQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    Log.e("Error from: ", e.message.toString())
+                }
+                override fun onResponse(response: Response<SearchUserQuery.Data>) {
+                    runOnUiThread {
+                        userAdapter.updateData(
+                            response!!.data()!!.userEntry()!!.user() as List<SearchUserQuery.User>
+                        )
+                    }
+                }
+            })
     }
 
     /**
@@ -92,7 +92,6 @@ class GithubUsersActivity : AppCompatActivity() {
      */
     private fun selectUser (item: SearchUserQuery.User) {
         val user = item.node()?.fragments()?.userFragment()
-        Toast.makeText(this, "Selected user: ${user?.name()}", Toast.LENGTH_LONG).show()
         val intent = Intent(this@GithubUsersActivity, GithubRepositoriesActivity::class.java)
         intent.putExtra(Constants.LOGIN_USER_CODE, user?.login())
         intent.putExtra(Constants.NAME_USER_CODE, user?.name())
