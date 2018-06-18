@@ -37,7 +37,7 @@ class GithubRepositoriesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_github_repositories)
         ButterKnife.bind(this)
-        client = GraphQlTools.setupApollo()
+        client = GraphQlTools.setupApollo(this)
 
         userLogin = intent.getStringExtra(Constants.LOGIN_USER_CODE)
         val userName = intent.getStringExtra(Constants.NAME_USER_CODE)

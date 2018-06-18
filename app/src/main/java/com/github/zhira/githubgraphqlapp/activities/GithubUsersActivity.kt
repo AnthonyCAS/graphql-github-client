@@ -41,7 +41,7 @@ class GithubUsersActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_github_users)
         ButterKnife.bind(this)
-        client = GraphQlTools.setupApollo()
+        client = GraphQlTools.setupApollo(this)
         usersRecyclerView.layoutManager = LinearLayoutManager(this)
         usersRecyclerView.hasFixedSize()
         userAdapter = UserAdapter { item: SearchUserQuery.User -> selectUser(item)}

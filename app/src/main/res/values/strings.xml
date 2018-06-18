@@ -3,4 +3,6 @@
     <string name="github_users_title">Github Users</string>
     <string name="github_users_search_placeholder">Search Github Users</string>
     <string name="github_repositories_pr_label">PR Count: </string>
+
+    <string name="github_apikey">@string/github_graphql__token</string>
 </resources>
