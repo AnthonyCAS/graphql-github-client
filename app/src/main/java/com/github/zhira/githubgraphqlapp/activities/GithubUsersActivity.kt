@@ -82,12 +82,13 @@ class GithubUsersActivity : AppCompatActivity() {
                     Log.e("Error: ", e.message.toString())
                 }
                 override fun onResponse(response: Response<SearchUserQuery.Data>) {
-                    END_CURSOR = response!!.data()!!.userEntry().pageInfo()!!.endCursor().toString()
-                    HAS_NEXT_PAGE = response!!.data()!!.userEntry().pageInfo()!!.hasNextPage()
                     runOnUiThread {
                         userAdapter.updateData(
-                            response!!.data()!!.userEntry()!!.user() as List<SearchUserQuery.User>
+                            response!!.data()!!.userEntry()!!.user() as List<SearchUserQuery.User>,
+                            END_CURSOR
                         )
+                        END_CURSOR = response!!.data()!!.userEntry().pageInfo()!!.endCursor().toString()
+                        HAS_NEXT_PAGE = response!!.data()!!.userEntry().pageInfo()!!.hasNextPage()
                     }
                 }
             })
