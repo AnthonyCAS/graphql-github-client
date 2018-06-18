@@ -24,6 +24,20 @@ In order to create a personal access token and be able to use the Github GraphQL
 - Finally click Generate token and save it because it won’t be displayed again the future.
 #
 
+## Add the Github TOKEN created before in the project
+```
+Github's api key is stored in api_key.xml file in res/values folder, It is not in this repository.
+So please create it, like below
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="github_graphql__token">YOUR_API_KEY_HERE</string>
+</resources>
+
+This file should be in the location: app/src/main/res/values/api_key.xml
+```
+
+#
 ## License
 
 >Copyright © 2018 Anthony Alfredo Ccapira Avendaño
