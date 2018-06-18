@@ -31,8 +31,9 @@ class RepositoryAdapter(): RecyclerView.Adapter<RepositoryAdapter.ViewHolder>() 
         holder.bindItems(repositoryEntries[position])
     }
 
-    fun updateData(data: List<SearchRepositoryQuery.RepositoryEntry>) {
-        repositoryEntries.clear()
+    fun updateData(data: List<SearchRepositoryQuery.RepositoryEntry>, end_cursor: String?) {
+        if (end_cursor == null)
+            repositoryEntries.clear()
         repositoryEntries.addAll(data)
         notifyDataSetChanged()
     }

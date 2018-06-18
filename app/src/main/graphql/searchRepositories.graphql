@@ -1,6 +1,6 @@
-query SearchRepository($login: String!, $number: Int!) {
+query SearchRepository($login: String!, $number: Int!, $after: String) {
   user(login: $login) {
-    repository: repositories(first: $number, isFork: false) {
+    repository: repositories(first: $number, after: $after, isFork: false) {
         totalCount
         pageInfo {
           endCursor

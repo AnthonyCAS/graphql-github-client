@@ -18,15 +18,20 @@ import com.github.zhira.githubgraphqlapp.models.Item
 import com.github.zhira.githubgraphqlapp.utilities.Constants
 import com.github.zhira.githubgraphqlapp.utilities.GraphQlTools
 import kotlinx.android.synthetic.main.activity_github_repositories.view.*
+import kotlinx.android.synthetic.main.adapter_user_item.*
 import java.util.ArrayList
 
 class GithubRepositoriesActivity : AppCompatActivity() {
+
+    private var END_CURSOR: String? = null
+    private var HAS_NEXT_PAGE: Boolean = false
 
     @BindView(R.id.repositories_toolbar) lateinit var toolbar: android.support.v7.widget.Toolbar
     @BindView(R.id.repositories_list_rv) lateinit var repositoryRecyclerView: RecyclerView
 
     private lateinit var repositoryAdapter: RepositoryAdapter
     private lateinit var client: ApolloClient
+    private lateinit var userLogin: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +39,7 @@ class GithubRepositoriesActivity : AppCompatActivity() {
         ButterKnife.bind(this)
         client = GraphQlTools.setupApollo()
 
-        val userLogin = intent.getStringExtra(Constants.LOGIN_USER_CODE)
+        userLogin = intent.getStringExtra(Constants.LOGIN_USER_CODE)
         val userName = intent.getStringExtra(Constants.NAME_USER_CODE)
 
         toolbar.title = ""
@@ -50,15 +55,17 @@ class GithubRepositoriesActivity : AppCompatActivity() {
         repositoryRecyclerView.addItemDecoration(DividerItemDecoration(
                 this,
                 DividerItemDecoration.VERTICAL))
+        setRecyclerViewScrollListener()
         if (userLogin != null)
-            loadUsers(userLogin, 50)
+            loadRepositories()
     }
 
-    private fun loadUsers (login: String, limit: Int) {
+    private fun loadRepositories () {
         client.query(SearchRepositoryQuery
                 .builder()
-                .login(login)
-                .number(limit)
+                .login(userLogin)
+                .number(Constants.QUERY_LIMIT)
+                .after(END_CURSOR)
                 .build())
                 .enqueue(object : ApolloCall.Callback<SearchRepositoryQuery.Data>() {
                     override fun onFailure(e: ApolloException) {
@@ -67,13 +74,33 @@ class GithubRepositoriesActivity : AppCompatActivity() {
                     override fun onResponse(response: Response<SearchRepositoryQuery.Data>) {
                         runOnUiThread {
                             repositoryAdapter.updateData(
-                                    response!!.data()!!.user()!!.repository().repositoryEntry() as List<SearchRepositoryQuery.RepositoryEntry>
+                                response!!.data()!!.user()!!.repository().repositoryEntry() as List<SearchRepositoryQuery.RepositoryEntry>,
+                                END_CURSOR
                             )
+                            END_CURSOR = response!!.data()!!.user()!!.repository()!!.pageInfo()!!.endCursor().toString()
+                            HAS_NEXT_PAGE = response!!.data()!!.user()!!.repository()!!.pageInfo()!!.hasNextPage()
                         }
                     }
                 })
     }
 
+    /**
+     * Scroll Listener to get new data
+     */
+    private fun setRecyclerViewScrollListener () {
+        repositoryRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!recyclerView?.canScrollVertically(1)!! && HAS_NEXT_PAGE && userLogin != null) {
+                    loadRepositories()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+        })
+    }
     override fun onBackPressed() {
         super.onBackPressed()
     }

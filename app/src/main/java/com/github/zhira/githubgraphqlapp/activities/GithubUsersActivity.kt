@@ -105,6 +105,9 @@ class GithubUsersActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    /**
+     * Scroll Listener to get new data
+     */
     private fun setRecyclerViewScrollListener () {
         usersRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
