@@ -26,7 +26,7 @@ class GithubUsersActivity : AppCompatActivity() {
 
     private lateinit var END_CURSOR: String
     private var HAS_NEXT_PAGE: Boolean = false
-    
+
     @BindView(R.id.search_box) lateinit var searchEditText: EditText
     @BindView(R.id.users_list_rv) lateinit var usersRecyclerView: RecyclerView
 
@@ -49,7 +49,7 @@ class GithubUsersActivity : AppCompatActivity() {
         itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.recycler_divider)!!)
         usersRecyclerView.addItemDecoration(itemDecorator)
         setRecyclerViewScrollListener()
-        loadUsers("a", 10)
+        loadUsers("a")
     }
 
     // callback for searchBox, wait 1 second for a new query
@@ -61,23 +61,25 @@ class GithubUsersActivity : AppCompatActivity() {
             object : TimerTask() {
                 override fun run() {
                     Log.e("Query users", text.toString())
-                    loadUsers(text.toString(), 50)
+                    loadUsers(text.toString())
                 }
             }, delay
         )
     }
 
-    private fun loadUsers (query: String, limit: Int) {
+    private fun loadUsers (query: String) {
         client.query(SearchUserQuery
             .builder()
             .query(query)
-            .number(limit)
+            .number(Constants.QUERY_LIMIT)
             .build())
             .enqueue(object : ApolloCall.Callback<SearchUserQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
-                    Log.e("Error from: ", e.message.toString())
+                    Log.e("Error: ", e.message.toString())
                 }
                 override fun onResponse(response: Response<SearchUserQuery.Data>) {
+                    END_CURSOR = response!!.data()!!.userEntry().pageInfo()!!.endCursor().toString()
+                    HAS_NEXT_PAGE = response!!.data()!!.userEntry().pageInfo()!!.hasNextPage()
                     runOnUiThread {
                         userAdapter.updateData(
                             response!!.data()!!.userEntry()!!.user() as List<SearchUserQuery.User>
@@ -103,7 +105,7 @@ class GithubUsersActivity : AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView?.canScrollVertically(1)!!) {
-                    Log.e("REACH", "END");
+                    Log.e("REACH", "END")
                 }
             }
 
