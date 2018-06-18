@@ -38,6 +38,12 @@ This file should be in the location: app/src/main/res/values/api_key.xml
 ```
 
 #
+## Screenshots
+| Users | Repositories |Splash|
+| :-:   |      :-:     | :-:  |
+| ![First](screenshots/users.png?raw=true) | ![Sec](screenshots/repositories.png?raw=true) | ![Third](screenshots/splash.png?raw=true) |
+
+#
 ## License
 
 >Copyright © 2018 Anthony Alfredo Ccapira Avendaño
